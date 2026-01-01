@@ -1,0 +1,39 @@
+-- schema.sql for FitTrack (fitnesss)
+CREATE DATABASE IF NOT EXISTS fitnesss;
+USE fitnesss;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100),
+  email VARCHAR(255) UNIQUE,
+  password VARCHAR(255),
+  height DECIMAL(5,2),
+  weight DECIMAL(6,2),
+  dob DATE,
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS progress (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  date DATE,
+  workout VARCHAR(100),
+  sets INT,
+  reps INT,
+  lift_weight FLOAT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS meals (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  meal_name VARCHAR(255) NOT NULL,
+  calories INT NOT NULL,
+  protein FLOAT DEFAULT NULL,
+  carbs FLOAT DEFAULT NULL,
+  fat FLOAT DEFAULT NULL,
+  meal_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
