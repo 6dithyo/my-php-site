@@ -1,28 +1,27 @@
 <?php
-include 'db.php';
+require 'db.php';
 
-$token = $_POST['token'];
-$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+$token = $_POST['token'] ?? '';
+$newPassword = $_POST['password'] ?? '';
 
-$stmt = $conn->prepare(
-  "SELECT id FROM users WHERE reset_token = ? AND reset_expires > NOW()"
-);
-$stmt->bind_param("s", $token);
-$stmt->execute();
-$res = $stmt->get_result();
-
-if ($res->num_rows !== 1) {
-    die("Reset link expired or invalid.");
+if (empty($token) || empty($newPassword)) {
+    die("Invalid request");
 }
 
-$user = $res->fetch_assoc();
+$hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-$update = $conn->prepare(
-  "UPDATE users 
-   SET password=?, reset_token=NULL, reset_expires=NULL 
-   WHERE id=?"
-);
-$update->bind_param("si", $password, $user['id']);
-$update->execute();
+// Update password + invalidate token
+$stmt = $conn->prepare("
+    UPDATE users 
+    SET password = ?, reset_token = NULL, reset_expires = NULL
+    WHERE reset_token = ? AND reset_expires > NOW()
+");
 
-echo "Password updated successfully. <a href='../login.php'>Login</a>";
+$stmt->bind_param("ss", $hashedPassword, $token);
+$stmt->execute();
+
+if ($stmt->affected_rows === 0) {
+    die("Reset link expired or invalid");
+}
+
+echo "Password reset successful. You can now login.";

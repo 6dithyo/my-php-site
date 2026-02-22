@@ -15,12 +15,12 @@ if ($email === '' || $password === '') {
     exit;
 }
 
-$stmt = $conn->prepare("SELECT id, username, password FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT id, username, password, role FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $res = $stmt->get_result();
 
-if ($res->num_rows !== 1) {-
+if ($res->num_rows !== 1) {
     header("Location: ../login.php?err=noemail");
     exit;
 }
@@ -36,7 +36,12 @@ if (!password_verify($password, $user['password'])) {
 session_regenerate_id(true);
 $_SESSION['user_id'] = (int)$user['id'];
 $_SESSION['username'] = $user['username'];
+$_SESSION['role'] = $user['role'] ?? 'member';
 
-header("Location: ../dashboard.php");
+if (isset($user['role']) && $user['role'] === 'trainer') {
+    header("Location: ../trainer_dashboard.php");
+} else {
+    header("Location: ../dashboard.php");
+}
 exit;
 ?>

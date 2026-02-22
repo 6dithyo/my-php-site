@@ -1,13 +1,11 @@
 <?php
-date_default_timezone_set('Asia/Kolkata'); // or your timezone
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "fitnesss";
-
-$conn = new mysqli($servername, $username, $password, $database);
-if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
+$conn = new mysqli("localhost", "root", "", "fitnesss");
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 ?>

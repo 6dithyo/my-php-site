@@ -1,4 +1,5 @@
 <?php
+require 'php/auth.php';
 include 'db.php';
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_SESSION['user_id'])) {
     $height = floatval($_POST['height']);
