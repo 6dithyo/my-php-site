@@ -1,6 +1,6 @@
 -- schema.sql for FitTrack (fitnesss)
-CREATE DATABASE IF NOT EXISTS fitnesss;
-USE fitnesss;
+CREATE DATABASE IF NOT EXISTS if0_40804252_db;
+USE if0_40804252_db;
 
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
